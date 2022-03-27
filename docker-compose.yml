@@ -1,0 +1,16 @@
+version: '3'
+services:
+  php:
+    image: yiisoftware/yii2-php:8.1-apache
+    volumes:
+      - .:/app
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.oilterminal.rule: "Host(`ebatt.localhost`)"
+    networks:
+      - web
+    environment:
+      PHP_USER_ID: 1000
+networks:
+  web:
+    external: true
