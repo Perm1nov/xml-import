@@ -1,7 +1,8 @@
 <?php
 
-use yii\queue\amqp_interop\Queue;
-use yii\queue\LogBehavior;
+use yii\mutex\MysqlMutex;
+use yii\queue\db\Queue;
+use yii\queue\debug\Panel;
 
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
@@ -17,10 +18,11 @@ $config = [
     'components' => [
         'queue' => [
             'class' => Queue::class,
-            'as log' => LogBehavior::class,
+            'db' => 'db',
+            'tableName' => '{{queue}}',
+            'mutex' => MysqlMutex::class,
         ],
         'request' => [
-            // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'uNzn6lpjGcB3Y_5QfuqKuYyvyqVXITdz',
         ],
         'cache' => [
@@ -35,9 +37,6 @@ $config = [
         ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
-            // send all mails to a file by default. You have to set
-            // 'useFileTransport' to false and configure transport
-            // for the mailer to send real emails.
             'useFileTransport' => true,
         ],
         'log' => [
@@ -50,14 +49,10 @@ $config = [
             ],
         ],
         'db' => $db,
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
-            'rules' => [
-            ],
         ],
-        */
     ],
     'params' => $params,
 ];
@@ -66,13 +61,14 @@ if (YII_ENV_DEV) {
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [
         'class' => 'yii\debug\Module',
-        // uncomment the following to add your IP if you are not connecting from localhost.
         'allowedIPs' => ['*'],
+        'panels' => [
+            'queue' => Panel::class,
+        ],
     ];
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
-        // uncomment the following to add your IP if you are not connecting from localhost.
         'allowedIPs' => ['*'],
     ];
 }

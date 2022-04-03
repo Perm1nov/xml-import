@@ -18,8 +18,8 @@
         "yiisoft/yii2": "~2.0.14",
         "yiisoft/yii2-bootstrap4": "~2.0.0",
         "yiisoft/yii2-swiftmailer": "~2.0.0 || ~2.1.0",
-        "yiisoft/yii2-queue": "^2.3",
-        "queue-interop/amqp-interop": "0.8.2"
+        "yiisoft/yii2-queue": "^2.3.4",
+        "enqueue/amqp-bunny": "^0.10.9"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "dev-master",

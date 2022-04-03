@@ -6,11 +6,36 @@ services:
       - .:/app
     labels:
       traefik.enable: "true"
-      traefik.http.routers.oilterminal.rule: "Host(`ebatt.localhost`)"
+      traefik.http.routers.oilterminal.rule: "Host(`test.localhost`)"
     networks:
       - web
+      - default
     environment:
       PHP_USER_ID: 1000
+    depends_on:
+      - db
+
+  php-worker:
+    image: yiisoftware/yii2-php:8.1-apache
+    environment:
+      PHP_USER_ID: 1000
+    volumes:
+      - .:/app
+    command: /usr/local/bin/php /app/yii queue/listen
+    depends_on:
+      - db
+    networks:
+      - default
+
+  db:
+    image: mysql:5
+    ports:
+      - "127.0.0.1:3306:3306"
+    environment:
+      MYSQL_DATABASE: 'database'
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    networks:
+      - default
 networks:
   web:
     external: true
