@@ -1,19 +1,28 @@
 <?php
 
+use yii\mutex\MysqlMutex;
+use yii\queue\db\Queue;
+
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'basic-console',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    'bootstrap' => ['log', 'queue'],
     'controllerNamespace' => 'app\commands',
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
-        '@npm'   => '@vendor/npm-asset',
+        '@npm' => '@vendor/npm-asset',
         '@tests' => '@app/tests',
     ],
     'components' => [
+        'queue' => [
+            'class' => Queue::class,
+            'db' => 'db',
+            'tableName' => '{{queue}}',
+            'mutex' => MysqlMutex::class,
+        ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
